@@ -1,39 +1,23 @@
 # OpenClaw Custom Skills Collection
 
-一个精心整理的OpenClaw自定义技能集合，包含实用的硬件控制、系统维护和自动化工具。
-
-## ✨ 特性
-
-- **🔧 实用技能**：经过实战检验的生产级技能
-- **📚 完整文档**：每个技能都有详细的使用说明
-- **⚙️ 开箱即用**：标准化配置，易于集成
-- **🔄 持续维护**：定期更新和优化
+一个精心整理的OpenClaw自定义技能集合，每个技能都有独立的文件夹，便于查找和使用。
 
 ## 📁 项目结构
 
 ```
 openclaw-skills/
-├── skills/                    # 核心技能目录
-│   ├── android-flashlight/   # 安卓闪光灯控制
-│   └── session-cleanup-v2/   # 会话清理工具
-├── scripts/                  # 辅助脚本
-│   ├── daily-diary/         # 每日日记系统脚本
-│   └── install-skills.sh    # 一键安装脚本
-├── config/                  # 配置文件
-│   └── rss-sources.json    # RSS源配置（用于日记系统）
-├── cron-tasks/             # 定时任务配置
-│   ├── session-cleanup.json
-│   └── dashboard-monitor.json
-├── docs/                   # 文档
-│   └── daily-diary-skill.md
-├── examples/               # 示例文件
-│   └── sample-daily-diary.md
-└── README.md              # 项目说明（本文档）
+├── android-flashlight/          # 安卓闪光灯控制技能
+├── daily-diary/                 # 每日日记系统技能
+├── session-cleanup/             # 会话清理技能
+├── cron-tasks/                  # 定时任务配置文件
+├── scripts/                     # 辅助脚本
+├── LICENSE                      # MIT许可证
+└── README.md                    # 项目说明（本文档）
 ```
 
 ## 🚀 快速开始
 
-### 一键安装
+### 一键安装所有技能
 ```bash
 # 克隆仓库
 git clone https://github.com/Haoqi7/openclaw-skills.git
@@ -46,18 +30,29 @@ cd openclaw-skills
 ### 手动安装特定技能
 ```bash
 # 安装安卓闪光灯技能
-cp -r skills/android-flashlight /usr/lib/node_modules/openclaw/skills/
+cp -r android-flashlight /usr/lib/node_modules/openclaw/skills/
 
 # 安装会话清理技能
-cp -r skills/session-cleanup-v2 /usr/lib/node_modules/openclaw/skills/
+cp -r session-cleanup /usr/lib/node_modules/openclaw/skills/
+
+# 安装每日日记系统
+mkdir -p ~/.openclaw/workspace/daily
+cp daily-diary/*.sh ~/.openclaw/workspace/daily/
+chmod +x ~/.openclaw/workspace/daily/*.sh
 ```
 
-## 📋 技能列表
+## 📋 技能详情
 
 ### 1. Android Flashlight Control
-**路径**: `skills/android-flashlight/`
+**文件夹**: `android-flashlight/`
 
 控制安卓手机闪光灯（手电筒）的硬件技能。
+
+**包含文件**:
+- `SKILL.md` - 完整技能文档
+- `README.md` - 简要说明
+- `flashlight.py` - Python控制脚本
+- `test_flashlight.sh` - 测试脚本
 
 **功能**:
 - 打开/关闭闪光灯
@@ -69,12 +64,34 @@ cp -r skills/session-cleanup-v2 /usr/lib/node_modules/openclaw/skills/
 - 硬件测试
 - 自动化控制
 
-**文档**: [skills/android-flashlight/SKILL.md](skills/android-flashlight/SKILL.md)
+### 2. Daily Diary System
+**文件夹**: `daily-diary/`
 
-### 2. Session Cleanup v2
-**路径**: `skills/session-cleanup-v2/`
+每日自动生成日记的完整系统，包含新闻获取和数据分析。
+
+**包含文件**:
+- `daily-diary-skill.md` - 完整技能文档
+- `diary-generator.sh` - 主脚本
+- `tavily-curl-search.sh` - Tavily API调用脚本
+- `simple-rss-fetcher.sh` - RSS备选脚本
+- `rss-sources.json` - RSS源配置
+- `sample-daily-diary.md` - 示例日记
+
+**功能**:
+- 自动定时执行（每日20:00北京时间）
+- 三层新闻获取架构（Tavily API + RSS + 降级）
+- 系统状态数据收集
+- 智能心情评估
+- 标准化日记输出
+
+### 3. Session Cleanup
+**文件夹**: `session-cleanup/`
 
 清理OpenClaw过期会话文件的系统维护技能。
+
+**包含文件**:
+- `SKILL.md` - 完整技能文档
+- `handler.md` - 处理逻辑说明
 
 **功能**:
 - 清理超过12小时的会话文件
@@ -85,27 +102,6 @@ cp -r skills/session-cleanup-v2 /usr/lib/node_modules/openclaw/skills/
 - 定期系统清理
 - 存储空间优化
 - 系统性能维护
-
-**文档**: [skills/session-cleanup-v2/SKILL.md](skills/session-cleanup-v2/SKILL.md)
-
-### 3. Daily Diary System
-**路径**: `scripts/daily-diary/`
-
-每日自动生成日记的完整系统，包含新闻获取和数据分析。
-
-**功能**:
-- 自动定时执行（每日20:00北京时间）
-- 三层新闻获取架构（Tavily API + RSS + 降级）
-- 系统状态数据收集
-- 智能心情评估
-- 标准化日记输出
-
-**核心脚本**:
-- `diary-generator.sh` - 主脚本
-- `tavily-curl-search.sh` - Tavily API调用
-- `simple-rss-fetcher.sh` - RSS备选方案
-
-**文档**: [docs/daily-diary-skill.md](docs/daily-diary-skill.md)
 
 ## ⚙️ 配置说明
 
@@ -139,65 +135,64 @@ openclaw cron create --json cron-tasks/dashboard-monitor.json
 
 ### 安卓闪光灯技能
 ```bash
-# 激活技能（当提到"手电筒"、"闪光灯"时）
-# 技能会自动检测并控制 /sys/class/leds/flashlight/brightness
+cd android-flashlight
 
-# 手动测试
-cd skills/android-flashlight
+# 测试闪光灯
 python3 flashlight.py on   # 打开闪光灯
 python3 flashlight.py off  # 关闭闪光灯
+
+# 运行测试脚本
+./test_flashlight.sh
+```
+
+### 每日日记系统
+```bash
+cd daily-diary
+
+# 配置环境变量
+export TAVILY_API_KEY="your_api_key"
+
+# 测试运行
+./diary-generator.sh
+
+# 测试Tavily API
+./tavily-curl-search.sh --query "测试新闻" --count 1
+
+# 测试RSS备选
+./simple-rss-fetcher.sh
 ```
 
 ### 会话清理技能
 ```bash
-# 激活技能（当提到"清理会话"、"session cleanup"时）
-# 或通过定时任务自动执行
+# 查看技能文档
+cat session-cleanup/SKILL.md
 
 # 手动执行清理
 openclaw sessions cleanup
 ```
 
-### 每日日记系统
-```bash
-# 配置环境变量
-export TAVILY_API_KEY="your_api_key"
-
-# 测试运行
-cd scripts/daily-diary
-./diary-generator.sh
-
-# 查看生成的日记
-ls -lt ~/.openclaw/workspace/daily/*.md | head -5
-```
-
 ## 📊 技能对比
 
-| 技能 | 类型 | 复杂度 | 依赖 | 适用场景 |
-|------|------|--------|------|----------|
-| Android Flashlight | 硬件控制 | 低 | root权限 | 硬件测试、紧急照明 |
-| Session Cleanup | 系统维护 | 中 | OpenClaw CLI | 系统优化、存储管理 |
-| Daily Diary | 数据处理 | 高 | Tavily API、Python | 自动化报告、数据分析 |
+| 技能 | 文件夹 | 类型 | 复杂度 | 依赖 |
+|------|--------|------|--------|------|
+| Android Flashlight | `android-flashlight/` | 硬件控制 | 低 | root权限 |
+| Daily Diary | `daily-diary/` | 数据处理 | 高 | Tavily API、Python |
+| Session Cleanup | `session-cleanup/` | 系统维护 | 中 | OpenClaw CLI |
 
 ## 🔧 开发与贡献
 
 ### 添加新技能
-1. 在 `skills/` 目录创建新技能文件夹
-2. 包含 `SKILL.md` 文档文件
-3. 提供必要的脚本和配置文件
-4. 更新本README.md文件
+1. 创建新的技能文件夹（如 `new-skill/`）
+2. 包含必要的文档和脚本文件
+3. 更新本README.md文件
+4. 测试技能功能
 
 ### 技能文档规范
-每个技能应包含：
-- `SKILL.md` - 完整技能文档
-- `README.md` - 简要说明（可选）
+每个技能文件夹应包含：
+- `SKILL.md` 或 `README.md` - 技能文档
 - 必要的脚本文件
+- 配置文件（如果需要）
 - 示例或测试文件
-
-### 代码规范
-- Shell脚本使用Bash语法
-- Python脚本遵循PEP 8
-- 配置文件使用JSON格式
-- 添加必要的注释
 
 ## 🚨 故障排除
 
@@ -205,8 +200,8 @@ ls -lt ~/.openclaw/workspace/daily/*.md | head -5
 
 1. **权限问题**
    ```bash
-   chmod +x scripts/*.sh
-   chmod +x skills/*/*.py
+   chmod +x daily-diary/*.sh
+   chmod +x android-flashlight/*.py
    ```
 
 2. **API密钥错误**
@@ -215,7 +210,8 @@ ls -lt ~/.openclaw/workspace/daily/*.md | head -5
    echo $TAVILY_API_KEY
    
    # 测试API连接
-   ./scripts/daily-diary/tavily-curl-search.sh --query "测试" --count 1
+   cd daily-diary
+   ./tavily-curl-search.sh --query "测试" --count 1
    ```
 
 3. **OpenClaw命令未找到**
@@ -226,11 +222,6 @@ ls -lt ~/.openclaw/workspace/daily/*.md | head -5
    # 检查PATH配置
    echo $PATH
    ```
-
-### 日志文件
-- **安装日志**: 查看 `install-skills.sh` 输出
-- **日记系统日志**: `~/.openclaw/workspace/daily/diary.log`
-- **Tavily API日志**: `~/.openclaw/workspace/daily/tavily-search.log`
 
 ## 📄 许可证
 
@@ -246,19 +237,13 @@ MIT License - 详见 [LICENSE](LICENSE) 文件。
 3. 提交更改
 4. 创建Pull Request
 
-### 开发流程
-1. 在本地测试技能功能
-2. 更新相关文档
-3. 确保向后兼容性
-4. 添加必要的测试
-
 ## 🙏 致谢
 
 感谢OpenClaw社区和所有贡献者的支持！
 
 ---
 
-**版本**: v2.0  
+**版本**: v2.1  
 **最后更新**: 2026年4月4日  
 **维护者**: Haoqi7  
 **状态**: ✅ 生产就绪
