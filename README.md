@@ -9,23 +9,12 @@ openclaw-skills/
 ├── android-flashlight/          # 安卓闪光灯控制技能
 ├── daily-diary/                 # 每日日记系统技能
 ├── session-cleanup/             # 会话清理技能
-├── cron-tasks/                  # 定时任务配置文件
-├── scripts/                     # 辅助脚本
 ├── LICENSE                      # MIT许可证
 └── README.md                    # 项目说明（本文档）
 ```
 
 ## 🚀 快速开始
 
-### 一键安装所有技能
-```bash
-# 克隆仓库
-git clone https://github.com/Haoqi7/openclaw-skills.git
-cd openclaw-skills
-
-# 运行安装脚本
-./scripts/install-skills.sh
-```
 
 ### 手动安装特定技能
 ```bash
@@ -114,22 +103,6 @@ export TAVILY_API_KEY="your_tavily_api_key_here"
 export OPENCLAW_WORKSPACE="$HOME/.openclaw/workspace"
 ```
 
-### 定时任务配置
-预配置的定时任务文件位于 `cron-tasks/` 目录：
-
-1. **会话清理任务** (`session-cleanup.json`)
-   - 每天12:00（北京时间）执行
-   - 清理过期会话文件
-
-2. **仪表板监控任务** (`dashboard-monitor.json`)
-   - 每天9:00和18:00（北京时间）执行
-   - 监控OpenClaw仪表板状态
-
-**创建定时任务**:
-```bash
-openclaw cron create --json cron-tasks/session-cleanup.json
-openclaw cron create --json cron-tasks/dashboard-monitor.json
-```
 
 ## 🛠️ 使用指南
 
