@@ -1,0 +1,20 @@
+{
+  "id": "efa43e0d-a59c-40a4-b3bd-6f964044216c",
+  "name": "session-cleanup",
+  "description": "清理超过12小时的会话文件和无效索引",
+  "enabled": true,
+  "schedule": {
+    "kind": "cron",
+    "expr": "0 12 * * *",
+    "tz": "Asia/Shanghai"
+  },
+  "sessionTarget": "isolated",
+  "payload": {
+    "kind": "agentTurn",
+    "message": "SESSION_CLEANUP_TASK"
+  },
+  "delivery": {
+    "mode": "announce",
+    "channel": "last"
+  }
+}
