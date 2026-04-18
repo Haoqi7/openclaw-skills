@@ -9,7 +9,7 @@ openclaw-skills/
 ├── android-flashlight/          # 安卓闪光灯控制技能
 ├── daily-diary/                 # 每日日记系统技能
 ├── session-cleanup/             # 会话清理技能
-├── siliconflow-image/             # 硅基流动支持的生图
+├── siliconflow-image/           # 硅基流动支持的生图
 ├── LICENSE                      # MIT许可证
 └── README.md                    # 项目说明（本文档）
 ```
