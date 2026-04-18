@@ -9,6 +9,7 @@ openclaw-skills/
 ├── android-flashlight/          # 安卓闪光灯控制技能
 ├── daily-diary/                 # 每日日记系统技能
 ├── session-cleanup/             # 会话清理技能
+├── siliconflow-image/             # 硅基流动支持的生图
 ├── LICENSE                      # MIT许可证
 └── README.md                    # 项目说明（本文档）
 ```
@@ -91,6 +92,23 @@ chmod +x ~/.openclaw/workspace/daily/*.sh
 - 定期系统清理
 - 存储空间优化
 - 系统性能维护
+### 4. siliconflow-image生图，编辑图
+siliconflow-image/
+├── SKILL.md                  # 技能配置与说明文件（技能入口）
+├── LICENSE.txt               # MIT 开源协议
+├── scripts/
+│   └── generate.py           # 核心脚本（纯 Python 标准库，无额外依赖）
+└── imageoutput/
+    └── README.md             # 图片输出目录
+
+
+**本技能固定使用 `Qwen/Qwen-Image-Edit-2509` 模型。该模型特点：**
+- 支持纯文生图和图片编辑
+- 支持最多 3 张参考图输入
+- **不支持** `image_size` 参数（模型自动决定输出尺寸）
+- 参考图支持 URL 和 base64 格式
+- 需要硅基流动apikey
+
 
 ## ⚙️ 配置说明
 
@@ -143,6 +161,8 @@ cat session-cleanup/SKILL.md
 # 手动执行清理
 openclaw sessions cleanup
 ```
+
+
 
 ## 📊 技能对比
 
