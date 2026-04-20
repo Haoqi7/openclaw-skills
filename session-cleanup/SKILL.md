@@ -1,33 +1,149 @@
-# Session Cleanup v2 Skill
+# Session Cleanup Skill
 
-## 描述
-清理超过12小时的会话文件和无效索引，确保控制面板显示正确。
+会话清理技能 - 使用 OpenClaw 内置的 `sessions cleanup` 命令清理超时会话。
 
 ## 触发条件
-- 消息包含: "清理会话", "session cleanup", "cleanup sessions"
-- OpenClaw cron任务消息: "SESSION_CLEANUP_TASK"
 
-## 工作流程
-1. **Step 1**: 删除超过12小时的 `.jsonl` 会话文件
-2. **Step 2**: 清理无效索引（文件不存在或超时的索引条目）
-3. **Step 3**: 执行 `openclaw sessions cleanup` 内置维护
+- 用户请求清理会话
+- 定时任务触发会话清理
+- 提到"清理会话"、"会话超时"、"session cleanup"等关键词
+
+## 核心机制
+
+使用增强版清理脚本 `/root/.openclaw/workspace-gongbu/scripts/session_cleanup_final.sh`，该脚本：
+
+- **直接计算6小时时间戳**：确保准确清理超过6小时的会话
+- **遍历所有agent目录**：全面清理所有会话文件
+- **更新sessions.json**：同步元数据，移除超时会话条目
+- **清理残留文件**：删除.deleted等残留文件
+- **调用内置命令**：最后调用OpenClaw内置命令确保一致性
+
+## 使用方法
+
+### 手动清理（推荐）
+
+```bash
+# 执行增强版清理脚本
+/root/.openclaw/workspace-gongbu/scripts/session_cleanup_final.sh
+
+# 或者直接运行OpenClaw命令（功能有限）
+openclaw sessions cleanup --enforce --all-agents --fix-missing
+```
+
+### 定时任务配置
+
+已配置每天北京时间 13:00 执行，使用增强版脚本清理超过 6 小时的会话：
+
+```json
+{
+  "name": "清理超6小时会话",
+  "schedule": { "kind": "cron", "expr": "0 13 * * *", "tz": "Asia/Shanghai" },
+  "sessionTarget": "isolated",
+  "payload": {
+    "kind": "agentTurn",
+    "message": "执行最终版会话清理任务：\n1. 运行最终版清理脚本：`/root/.openclaw/workspace-gongbu/scripts/session_cleanup_final.sh`\n2. 记录清理结果到工部工作区：`/root/.openclaw/workspace-gongbu/cron/session-cleanup-$(date +%Y-%m-%d).log`\n3. 验证清理效果：检查当前会话数量\n\n注意：脚本会直接删除超过6小时的会话文件，并更新sessions.json文件，确保彻底清理超时会话。"
+  }
+}
+```
+
+## 执行步骤
+
+1. **执行增强版清理脚本**
+   ```bash
+   /root/.openclaw/workspace-gongbu/scripts/session_cleanup_final.sh
+   ```
+
+2. **验证清理效果**
+   ```bash
+   openclaw sessions --all-agents
+   ```
+
+3. **记录结果**
+   - 路径：`/root/.openclaw/workspace-gongbu/cron/session-cleanup-YYYY-MM-DD.log`
+   - 详细报告：`/root/.openclaw/workspace-gongbu/cron/session-cleanup-fix-report.md`
+
+## 参数说明
+
+| 参数 | 说明 |
+|------|------|
+| `--dry-run` | 预览模式，不实际执行 |
+| `--enforce` | 强制执行清理 |
+| `--all-agents` | 对所有 agent 执行 |
+| `--active-key <key>` | 保护指定会话不被清理 |
+| `--fix-missing` | 清理 transcript 文件缺失的会话记录 |
+
+## 脚本位置
+
+增强版清理脚本已部署：
+
+```bash
+/root/.openclaw/workspace-gongbu/scripts/session_cleanup_final.sh
+```
+
+脚本功能：
+- 直接计算6小时时间戳进行清理
+- 处理所有agent的会话目录
+- 使用jq更新sessions.json文件
+- 清理残留文件
+- 调用OpenClaw内置命令同步元数据
 
 ## 清理规则
-- **会话文件**: 修改时间超过12小时的 `.jsonl` 文件
-- **索引条目**: 
-  - 对应的 `.jsonl` 文件不存在
-  - 或 `updatedAt` 时间戳超过12小时
 
-## 文件位置
-- 脚本: `/root/.openclaw/workspace-jinyiwei/scripts/session-cleanup-v2.sh`
-- 日志: `/root/.openclaw/workspace-jinyiwei/logs/session-cleanup-YYYYMMDD.log`
+1. **运行中会话** - 自动保护，不会被清理
+2. **当前任务会话** - 自动保护
+3. **所有会话** - 包括 main 会话，超时一律清理
 
-## 定时任务
-- 任务ID: `efa43e0d-a59c-40a4-b3bd-6f964044216c`
-- 执行时间: 每天12:00 (北京时间)
-- 触发消息: `SESSION_CLEANUP_TASK`
+## 输出格式
 
-## 依赖
-- Python3 (JSON解析)
-- OpenClaw CLI
-- jq (可选)
+```markdown
+# 会话清理报告
+
+**任务ID**: <cron-id>
+**执行时间**: YYYY-MM-DD HH:mm TZ
+**阈值**: 6小时
+
+## 清理结果
+
+Agent: taizi
+- Entries: N -> M (remove K)
+- Would prune stale: X
+- Would cap overflow: Y
+
+## 清理统计
+
+- **扫描会话数**: N
+- **清理会话数**: K
+- **保护会话**: agent:taizi:main
+
+## 结论
+
+<执行结果摘要>
+```
+
+## 示例输出
+
+```
+Agent: taizi
+Session store: /root/.openclaw/agents/taizi/sessions/sessions.json
+Maintenance mode: enforce
+Entries: 15 -> 3 (remove 12)
+Would prune missing transcripts: 0
+Would prune stale: 12
+Would cap overflow: 0
+
+Planned session actions:
+Action       Key                        Age       Model          Flags
+keep         agent:taizi:main           2h ago    astron-code-latest system protected
+remove       agent:taizi:subagent:abc   8h ago    astron-code-latest
+remove       agent:taizi:subagent:def   10h ago   astron-code-latest
+```
+
+## 注意事项
+
+1. **使用增强版脚本** - OpenClaw内置命令可能无法正确清理超时会话
+2. **定时任务已配置** - 每天13:00自动执行增强版脚本
+3. **无需报告** - 定时任务执行不需要向尚书省报告
+4. **验证效果** - 定期检查会话数量确保清理有效
+
+---
+*工部·基础设施技能*
