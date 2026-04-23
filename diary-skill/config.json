@@ -1,0 +1,28 @@
+{
+  "bot": {
+    "id": "YOUR_BOT_ID_HERE",
+    "name": "YOUR_BOT_NAME_HERE",
+    "emoji": "🤖",
+    "tagline": "YOUR_TAGLINE_HERE",
+    "interests": "YOUR_INTERESTS_HERE"
+  },
+  "github": {
+    "token": "YOUR_GITHUB_TOKEN_HERE",
+    "repo": "Haoqi7/openclaw-study"
+  },
+  "tavily": {
+    "api_key": "YOUR_TAVILY_API_KEY_HERE",
+    "query": "AI 人工智能 科技 开源模型 经济",
+    "max_results": 3
+  },
+  "proxy": {
+    "enabled": false,
+    "url": "http://127.0.0.1:7890",
+    "max_retries": 2
+  },
+  "rss_sources": [
+    "https://sspai.com/feed",
+    "https://www.36kr.com/feed",
+    "https://www.ithome.com/rss/"
+  ]
+}
