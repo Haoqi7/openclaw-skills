@@ -31,7 +31,7 @@ openclaw sessions cleanup --enforce --all-agents --fix-missing
 ```
 
 ### 定时任务配置
-
+例如：  
 已配置每天北京时间 13:00 执行，使用增强版脚本清理超过 6 小时的会话：
 
 ```json
