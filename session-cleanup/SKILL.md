@@ -10,7 +10,7 @@
 
 ## 核心机制
 
-使用增强版清理脚本 `/root/.openclaw/workspace-gongbu/scripts/session_cleanup_final.sh`，该脚本：
+使用增强版清理脚本 `./session_cleanup_final.sh`，该脚本：
 
 - **直接计算6小时时间戳**：确保准确清理超过6小时的会话
 - **遍历所有agent目录**：全面清理所有会话文件
@@ -24,7 +24,7 @@
 
 ```bash
 # 执行增强版清理脚本
-/root/.openclaw/workspace-gongbu/scripts/session_cleanup_final.sh
+./session_cleanup_final.sh
 
 # 或者直接运行OpenClaw命令（功能有限）
 openclaw sessions cleanup --enforce --all-agents --fix-missing
@@ -41,7 +41,7 @@ openclaw sessions cleanup --enforce --all-agents --fix-missing
   "sessionTarget": "isolated",
   "payload": {
     "kind": "agentTurn",
-    "message": "执行最终版会话清理任务：\n1. 运行最终版清理脚本：`/root/.openclaw/workspace-gongbu/scripts/session_cleanup_final.sh`\n2. 记录清理结果到工部工作区：`/root/.openclaw/workspace-gongbu/cron/session-cleanup-$(date +%Y-%m-%d).log`\n3. 验证清理效果：检查当前会话数量\n\n注意：脚本会直接删除超过6小时的会话文件，并更新sessions.json文件，确保彻底清理超时会话。"
+    "message": "执行最终版会话清理任务：\n1. 运行最终版清理脚本：`./session_cleanup_final.sh`\n2. 验证清理效果：检查当前会话数量\n\n注意：脚本会直接删除超过6小时的会话文件，并更新sessions.json文件，确保彻底清理超时会话。"
   }
 }
 ```
@@ -50,7 +50,7 @@ openclaw sessions cleanup --enforce --all-agents --fix-missing
 
 1. **执行增强版清理脚本**
    ```bash
-   /root/.openclaw/workspace-gongbu/scripts/session_cleanup_final.sh
+  ./session_cleanup_final.sh
    ```
 
 2. **验证清理效果**
@@ -59,8 +59,7 @@ openclaw sessions cleanup --enforce --all-agents --fix-missing
    ```
 
 3. **记录结果**
-   - 路径：`/root/.openclaw/workspace-gongbu/cron/session-cleanup-YYYY-MM-DD.log`
-   - 详细报告：`/root/.openclaw/workspace-gongbu/cron/session-cleanup-fix-report.md`
+
 
 ## 参数说明
 
@@ -77,7 +76,7 @@ openclaw sessions cleanup --enforce --all-agents --fix-missing
 增强版清理脚本已部署：
 
 ```bash
-/root/.openclaw/workspace-gongbu/scripts/session_cleanup_final.sh
+./session_cleanup_final.sh
 ```
 
 脚本功能：
@@ -118,32 +117,7 @@ Agent: taizi
 ## 结论
 
 <执行结果摘要>
-```
 
-## 示例输出
-
-```
-Agent: taizi
-Session store: /root/.openclaw/agents/taizi/sessions/sessions.json
-Maintenance mode: enforce
-Entries: 15 -> 3 (remove 12)
-Would prune missing transcripts: 0
-Would prune stale: 12
-Would cap overflow: 0
-
-Planned session actions:
-Action       Key                        Age       Model          Flags
-keep         agent:taizi:main           2h ago    astron-code-latest system protected
-remove       agent:taizi:subagent:abc   8h ago    astron-code-latest
-remove       agent:taizi:subagent:def   10h ago   astron-code-latest
-```
-
-## 注意事项
-
-1. **使用增强版脚本** - OpenClaw内置命令可能无法正确清理超时会话
-2. **定时任务已配置** - 每天13:00自动执行增强版脚本
-3. **无需报告** - 定时任务执行不需要向尚书省报告
-4. **验证效果** - 定期检查会话数量确保清理有效
 
 ---
-*工部·基础设施技能*
+
