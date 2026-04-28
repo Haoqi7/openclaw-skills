@@ -3,7 +3,7 @@
 
 ## 文件清单
 1. **SKILL.md** - 技能说明文档（已更新）
-2. **session_cleanup_final.sh** - 增强版清理脚本（可执行）
+2. **session_cleanup_complete.sh** - 增强版清理脚本（可执行）
 
 ## 功能特性
 - ✅ 遍历所有agent的会话目录
@@ -14,7 +14,7 @@
 ## 定时任务配置
 - **任务ID**: 61120776-1b1b-422c-8293-7c098e4dac47
 - **执行时间**: 每天13:00 (UTC+8)
-- **脚本路径**: `./session_cleanup_final.sh`
+- **脚本路径**: `./session_cleanup_complete.sh`
 
 ## 验证结果
 - ✅ 脚本语法正确
@@ -25,7 +25,7 @@
 ## 使用说明
 ```bash
 # 手动执行清理
-./session_cleanup_final.sh
+./session_cleanup_complete.sh
 
 # 验证清理效果
 openclaw sessions --all-agents
