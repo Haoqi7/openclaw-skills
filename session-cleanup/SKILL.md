@@ -10,7 +10,7 @@
 
 ## 核心机制
 
-使用增强版清理脚本 `./session_cleanup_final.sh`，该脚本：
+使用增强版清理脚本 `./session_cleanup_complete.sh`，该脚本：
 
 - **直接计算6小时时间戳**：确保准确清理超过6小时的会话
 - **遍历所有agent目录**：全面清理所有会话文件
@@ -24,7 +24,7 @@
 
 ```bash
 # 执行增强版清理脚本
-./session_cleanup_final.sh
+./session_cleanup_complete.sh
 
 # 或者直接运行OpenClaw命令（功能有限）
 openclaw sessions cleanup --enforce --all-agents --fix-missing
@@ -50,7 +50,7 @@ openclaw sessions cleanup --enforce --all-agents --fix-missing
 
 1. **执行增强版清理脚本**
    ```bash
-  ./session_cleanup_final.sh
+  ./session_cleanup_complete.sh
    ```
 
 2. **验证清理效果**
@@ -76,7 +76,7 @@ openclaw sessions cleanup --enforce --all-agents --fix-missing
 增强版清理脚本已部署：
 
 ```bash
-./session_cleanup_final.sh
+./session_cleanup_complete.sh
 ```
 
 脚本功能：
