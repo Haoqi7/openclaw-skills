@@ -18,7 +18,9 @@ license: MIT
 
 ## 使用前提
 
-用户必须提供**硅基流动 API Key**。如果用户未提供 API Key，请引导用户前往 https://cloud.siliconflow.cn 注册并获取。
+### API Key 获取
+
+**硅基流动 API Key 存放位置**：`/root/.openclaw/openclaw.json` 文件中，若没有让用户提供。
 
 此技能使用 Python 脚本直接调用 SiliconFlow API，**不需要**安装额外的 npm 包或 Python 依赖（仅使用 Python 标准库）。
 
