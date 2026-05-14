@@ -274,14 +274,19 @@ print(f'{img.width}x{img.height}')
 }
 
 # 根据分辨率判断是前置还是后置（返回 front/back/unknown）
+# 支持横屏和竖屏两种方向（拍照时设备方向不同会导致宽高互换）
 guess_camera_by_dims() {
     local dims="$1"
     local w h
     w=$(echo "$dims" | cut -dx -f1)
     h=$(echo "$dims" | cut -dx -f2)
-    if [ "$w" = "$BACK_WIDTH" ] && [ "$h" = "$BACK_HEIGHT" ]; then
+    # 后置: 1846x4000 或 4000x1846
+    if { [ "$w" = "$BACK_WIDTH" ] && [ "$h" = "$BACK_HEIGHT" ]; } || \
+       { [ "$w" = "$BACK_HEIGHT" ] && [ "$h" = "$BACK_WIDTH" ]; }; then
         echo "back"
-    elif [ "$w" = "$FRONT_WIDTH" ] && [ "$h" = "$FRONT_HEIGHT" ]; then
+    # 前置: 2392x5184 或 5184x2392
+    elif { [ "$w" = "$FRONT_WIDTH" ] && [ "$h" = "$FRONT_HEIGHT" ]; } || \
+         { [ "$w" = "$FRONT_HEIGHT" ] && [ "$h" = "$FRONT_WIDTH" ]; }; then
         echo "front"
     else
         echo "unknown"
