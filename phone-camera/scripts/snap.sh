@@ -28,6 +28,29 @@ check_root() {
     [[ "$result" =~ uid=0 ]]
 }
 
+# 自动获取手机 IP
+get_phone_ip() {
+    # 方法1: 从已连接设备获取 wlan0 IP
+    local ip
+    ip=$(run_q "ip addr show wlan0 2>/dev/null | grep 'inet ' | awk '{print \$2}' | cut -d/ -f1" | tr -d '\r')
+    
+    # 方法2: getprop
+    if [ -z "$ip" ]; then
+        ip=$(run_q "getprop dhcp.wlan0.ipaddress" | tr -d '\r')
+    fi
+    
+    echo "$ip"
+}
+
+# 连接设备
+connect_device() {
+    local ip="$1"
+    log "尝试连接 $ip:5555..."
+    adb connect "$ip:5555" >/dev/null 2>&1
+    sleep 1
+    adb get-state >/dev/null 2>&1
+}
+
 is_screen_on() {
     run_q "dumpsys power" | grep -q "mWakefulness=Awake"
 }
@@ -86,10 +109,36 @@ get_file_size() {
 
 # 检查 ADB
 if ! adb get-state >/dev/null 2>&1; then
-    log "ADB 未连接，尝试连接..."
-    adb connect 192.168.137.13:5555 >/dev/null 2>&1
-    sleep 1
-    adb get-state >/dev/null 2>&1 || error "ADB 连接失败"
+    log "ADB 未连接，尝试自动发现..."
+    
+    # 方法1: 尝试从 USB 设备获取 IP 并切换到 TCP/IP
+    if adb devices 2>/dev/null | grep -q 'device$'; then
+        log "检测到 USB 设备，尝试切换到网络连接..."
+        adb tcpip 5555 >/dev/null 2>&1
+        sleep 2
+        PHONE_IP=$(get_phone_ip)
+        if [ -n "$PHONE_IP" ]; then
+            connect_device "$PHONE_IP"
+        fi
+    fi
+    
+    # 方法2: 扫描本地网络（如果已知网段）
+    if ! adb get-state >/dev/null 2>&1; then
+        # 尝试从本机路由获取网段
+        LOCAL_IP=$(ip route get 1 2>/dev/null | grep -oP 'src \K[\d.]+' | head -1)
+        if [ -n "$LOCAL_IP" ]; then
+            NET_PREFIX=$(echo "$LOCAL_IP" | cut -d. -f1-3)
+            log "扫描网段 ${NET_PREFIX}.x..."
+            # 尝试常见 IP（网关、手机常用 IP）
+            for suffix in 1 2 100 101 102 103 104 105; do
+                if [ "$LOCAL_IP" != "${NET_PREFIX}.${suffix}" ]; then
+                    connect_device "${NET_PREFIX}.${suffix}" && break
+                fi
+            done
+        fi
+    fi
+    
+    adb get-state >/dev/null 2>&1 || error "ADB 连接失败，请确保手机已开启 USB 调试或网络调试"
 fi
 log "ADB 已连接"
 
